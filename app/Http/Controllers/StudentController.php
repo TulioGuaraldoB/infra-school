@@ -2,36 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
+use App\Repositories\StudentRepository;
 use Illuminate\Http\Request;
 
-class StudentController extends Controller {
-    public function __construct(Student $student) {
-        $this->student = $student;
+class StudentController extends Controller
+{
+    public function __construct(StudentRepository $studentRepository)
+    {
+        $this->studentRepository = $studentRepository;
     }
 
-    public function getAll() {
-        $students = $this->student::all();
-
-        return response()->json($students);
+    public function getAllStudents()
+    {
+        return response()->json($this->studentRepository->getAll());
     }
 
-    public function show($id) {
-        $student = $this->student::find($id);
-
-        return response()->json($student);
+    public function showStudent($id)
+    {
+        return response()->json($this->studentRepository->show($id));
     }
 
-    public function create(Request $request) {
-        $studentCreated = $this->student::create($request->all());
-
-        return response()->json($studentCreated);
+    public function insertStudent(Request $request)
+    {
+        return response()->json($this->studentRepository->create($request));
     }
 
-    public function update($id, Request $request) {
-        $studentUpdated = $this->student::findOrFail($id);
-        $studentUpdated->update($request->all());
-
-        return response()->json($studentUpdated);
+    public function updateStudent($id, Request $request)
+    {
+        return response()->json($this->studentRepository->update($id, $request));
     }
 }

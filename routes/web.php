@@ -1,31 +1,27 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+/** @var \Laravel\Lumen\Routing\Router $router */
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Application Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
+| Here is where you can register all of the routes for an application.
+| It is a breeze. Simply tell Lumen the URIs it should respond to
+| and give it the Closure to call when that URI is requested.
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+$router->get('/', function () use ($router) {
+    return $router->app->version();
 });
 
-Route::group(['prefix' => 'api'], function () {
-    Route::group(['prefix' => 'v1'], function () {
-        Route::get('/student', 'App\Http\Controllers\StudentController@getAll');
-        Route::get('/student/{id}', 'App\Http\Controllers\StudentController@show');
-        Route::post('/student', 'App\Http\Controllers\StudentController@create');
-        Route::put('/student/{id}', 'App\Http\Controllers\StudentController@update');
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->group(['prefix' => 'v1'], function () use ($router) {
+        $router->get('student', ['uses' => 'StudentController@getAllStudents']);
+        $router->get('student/{id}', ['uses' => 'StudentController@showStudent']);
+        $router->post('student', ['uses' => 'StudentController@insertStudent']);
+        $router->put('student/{id}', ['uses' => 'StudentController@updateStudent']);
     });
-});
-
-Route::get('/health', function () {
-    return response()->json('We are healthy!');
 });
